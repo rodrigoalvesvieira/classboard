@@ -3,6 +3,8 @@ package com.galizum.classboard.activities;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.galizum.classboard.R;
+import com.galizum.classboard.util.Logger;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -32,6 +35,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      */
     ViewPager mViewPager;
 
+    TextView textView;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -46,6 +51,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Specify that the Home/Up button should not be enabled, since there is no hierarchical
         // parent.
         actionBar.setHomeButtonEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         // Specify that we will be displaying tabs in the action bar.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -126,6 +132,22 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         @Override
         public CharSequence getPageTitle(int position) {
             return "Section " + (position + 1);
+        }
+    }
+
+    public void setFonts() {
+        Typeface fontOthers = Typeface.createFromAsset(getAssets(), "Montserrat-Regular.ttf");
+        textView.setTypeface(fontOthers);
+
+        try {
+            final int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+            TextView title = (TextView) getWindow().findViewById(titleId);
+            Typeface fontLogo = Typeface.createFromAsset(getAssets(), "HouseSlant-Regular.otf");
+
+            title.setTypeface(fontLogo);
+            // check for null and manipulate the title as see fit
+        } catch (Exception e) {
+            Logger.e("MyApp", "Failed to obtain action bar title reference");
         }
     }
 
