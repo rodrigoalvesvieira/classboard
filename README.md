@@ -11,6 +11,14 @@ Esse projeto utiliza uma série de dependências para funções de integração 
 * Picasso
 * Android Bootstrap
 
+## O Time
+
+* Rodrigo Alves
+* Igor Matos
+* Amanda Mendes
+* Ian Firemann
+* Phillipe Burgos.
+
 ## Copyright
 
-&copy; 2014 Rodrigo Alves, Igor Matos, Amanda Mendes, Diego Silva, Ian Firemann e Phillipe Burgos. Todos os Direitos Reservados.
+&copy; 2014 O Time. Todos os Direitos Reservados.
