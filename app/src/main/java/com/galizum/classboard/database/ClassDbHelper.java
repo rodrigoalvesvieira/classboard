@@ -39,6 +39,9 @@ public class ClassDbHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
+    public static void create(String title) {
+    }
+
     public int countClasses() {
         int count;
 
