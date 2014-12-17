@@ -6,7 +6,7 @@ Descrição para a Google Play Store:
 
 ## Sobre o app
 
-* Criado pela primeira vez para o [CodeCup 2014] no CIn/UFPE, evento patrocinado e apoiado pelo Facebook e Liferay, ficando em segundo colocado
+* Criado pela primeira vez para o [CodeCup 2014] no [CIn/UFPE], evento patrocinado e apoiado pelo Facebook e Liferay, ficando em segundo colocado
 * Utilizado por Rodrigo e Igor na disciplina [Introdução à Multimídia IF687] no semestre 2014.2
 * Utilizado por Rodrigo e Igor na disciplina [Interfaces Usuário-Máquina] no semestre 2014.2
 
@@ -31,5 +31,6 @@ Esse projeto utiliza uma série de dependências para funções de integração 
 &copy; 2014 O Time. Todos os Direitos Reservados.
 
 [CodeCup 2014]: http://citi.org.br/codecup
+[CIn/UFPE]: http://www2.cin.ufpe.br/site/index.php
 [Introdução à Multimídia IF687]: http://www.cin.ufpe.br/~dcunha/if687/index2.html
 [Interfaces Usuário-Máquina]: http://www.cin.ufpe.br/~if681/joomla2
