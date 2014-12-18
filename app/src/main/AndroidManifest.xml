@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.NavigationActivity" android:label="@string/demo_collection" />
+        <activity android:name=".activities.NavigationActivity" android:label="@string/show_class_pictures" />
     </application>
 
 </manifest>

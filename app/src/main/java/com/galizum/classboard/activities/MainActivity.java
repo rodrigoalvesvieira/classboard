@@ -2,8 +2,10 @@ package com.galizum.classboard.activities;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,11 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.galizum.classboard.MainApplication;
 import com.galizum.classboard.R;
+import com.galizum.classboard.database.ClassDbHelper;
 import com.galizum.classboard.util.Logger;
 import com.melnykov.fab.FloatingActionButton;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -45,6 +52,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     static View classesList;
     static View addButton;
+
+    private SecureRandom random = new SecureRandom();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,9 +140,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                 default:
                     // The other sections of the app are dummy placeholders.
-                    Fragment fragment = new DummySectionFragment();
+                    Fragment fragment = new ClassesSectionFragment();
                     Bundle args = new Bundle();
-                    args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
+                    args.putInt(ClassesSectionFragment.ARG_SECTION_NUMBER, i + 1);
                     fragment.setArguments(args);
                     return fragment;
             }
@@ -164,7 +173,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             title.setTypeface(fontLogo);
             // check for null and manipulate the title as see fit
         } catch (Exception e) {
-            Logger.e("MyApp", "Failed to obtain action bar title reference");
+            Logger.e(MainApplication.TAG, "Failed to obtain action bar title reference");
         }
     }
 
@@ -176,7 +185,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_section_camera, container, false);
 
             // Demonstration of a collection-browsing activity.
             rootView.findViewById(R.id.demo_collection_button)
@@ -209,26 +218,51 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
+    public void saveClassOnDatabase(String text) {
+        ClassDbHelper classDbHelper = new ClassDbHelper(getBaseContext());
+        SQLiteDatabase db = classDbHelper.getWritableDatabase();
+        classDbHelper.onCreate(db);
+
+        // Writing values to DB
+        ContentValues values = new ContentValues();
+
+        String randomId = new BigInteger(80, random).toString(32);
+        Logger.d(MainApplication.TAG, "Salvando nova disciplina com id " + randomId +  "...");
+
+        values.put("classId", randomId);
+        values.put("title", text);
+        db.insert(ClassDbHelper.TABLE_NAME, "null", values);
+
+        Toast.makeText(MainActivity.this, getResources().getString(R.string.class_saved), Toast.LENGTH_SHORT).show();
+    }
+
     /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
+     * A fragment for the Classes menu, with a ListView and a button to add another class
      */
-    public static class DummySectionFragment extends Fragment {
+    public static class ClassesSectionFragment extends Fragment {
 
         public static final String ARG_SECTION_NUMBER = "section_number";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_section_classes, container, false);
             Bundle args = getArguments();
-
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-                    getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));
 
             ListView listView = (ListView) classesList;
             FloatingActionButton fab = (FloatingActionButton) addButton;
 
-            if (fab != null) fab.attachToListView(listView);
+            if (fab != null) {
+                fab.attachToListView(listView);
+
+                fab.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Logger.d(MainApplication.TAG, "Click para adicionar disciplina efetuado");
+                    }
+                });
+            }
 
             return rootView;
         }

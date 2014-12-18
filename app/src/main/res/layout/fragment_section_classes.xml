@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="291dp"
+            android:layout_height="459dp"
+            android:visibility="visible"
+            android:layout_alignBottom="@+id/fab" />
+
+    </LinearLayout>
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:src="@drawable/ic_add_white_24dp"
+        fab:fab_colorNormal="@color/orange"
+        fab:fab_colorPressed="@color/orange_pressed"
+        fab:fab_colorRipple="@color/ripple"
+        android:layout_marginRight="48dp"
+        android:layout_marginBottom="43dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@android:id/list"
+        android:layout_alignEnd="@android:id/list" />
+
+</FrameLayout>
