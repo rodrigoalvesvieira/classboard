@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.galizum.classboard.MainApplication;
 import com.galizum.classboard.R;
 import com.galizum.classboard.util.Logger;
 
@@ -37,6 +38,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     TextView textView;
 
+    static String cameraTabTitle;
+    static String classesTabTitle;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -55,6 +59,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Specify that we will be displaying tabs in the action bar.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        cameraTabTitle = getResources().getString(R.string.camera_tab_title);
+        classesTabTitle = getResources().getString(R.string.classes_tab_title);
 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the
         // user swipes between sections.
@@ -126,12 +133,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Section " + (position + 1);
+            if (position == 0) return cameraTabTitle;
+
+            return classesTabTitle;
         }
     }
 
@@ -206,6 +215,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             Bundle args = getArguments();
             ((TextView) rootView.findViewById(android.R.id.text1)).setText(
                     getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));
+
             return rootView;
         }
     }

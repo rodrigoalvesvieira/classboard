@@ -12,4 +12,7 @@
     <string name="demo_external_activity">Demo External Activity</string>
     <string name="demo_collection">Demo Collection</string>
 
+    <string name="camera_tab_title">Câmera</string>
+    <string name="classes_tab_title">Disciplinas</string>
+
 </resources>
