@@ -14,11 +14,13 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.galizum.classboard.MainApplication;
 import com.galizum.classboard.R;
 import com.galizum.classboard.util.Logger;
+import com.melnykov.fab.FloatingActionButton;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -41,6 +43,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     static String cameraTabTitle;
     static String classesTabTitle;
 
+    static View classesList;
+    static View addButton;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -62,6 +67,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         cameraTabTitle = getResources().getString(R.string.camera_tab_title);
         classesTabTitle = getResources().getString(R.string.classes_tab_title);
+
+        classesList = findViewById(android.R.id.list);
+        addButton = findViewById(R.id.fab);
 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the
         // user swipes between sections.
@@ -213,8 +221,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
             Bundle args = getArguments();
+
             ((TextView) rootView.findViewById(android.R.id.text1)).setText(
                     getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));
+
+            ListView listView = (ListView) classesList;
+            FloatingActionButton fab = (FloatingActionButton) addButton;
+
+            if (fab != null) fab.attachToListView(listView);
 
             return rootView;
         }
