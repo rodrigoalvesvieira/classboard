@@ -60,7 +60,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     static View classesList;
     static View addButton;
 
-    private SecureRandom random = new SecureRandom();
+    static private SecureRandom random = new SecureRandom();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -225,8 +225,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
-    public void saveClassOnDatabase(String text) {
-        ClassDbHelper classDbHelper = new ClassDbHelper(getBaseContext());
+    /**
+     * A static method to create a new class object from the parameters it receives
+     *
+     * @param ctx, the current Activity
+     * @param text the title of the class to be created
+     */
+    public static void saveClassOnDatabase(Context ctx, String text) {
+        ClassDbHelper classDbHelper = new ClassDbHelper(ctx);
         SQLiteDatabase db = classDbHelper.getWritableDatabase();
         classDbHelper.onCreate(db);
 
@@ -240,7 +246,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         values.put("title", text);
         db.insert(ClassDbHelper.TABLE_NAME, "null", values);
 
-        Toast.makeText(MainActivity.this, getResources().getString(R.string.class_saved), Toast.LENGTH_SHORT).show();
+        Toast.makeText(ctx, ctx.getResources().getString(R.string.class_saved), Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -269,6 +275,36 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setThemeColor(getResources().getColor(R.color.dark_green))
                             .setDesign(Design.MATERIAL_LIGHT)
                             .showKeyboardOnDisplay(true)
+                            .setButton(Dialog.BUTTON_POSITIVE, R.string.save, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setButton(Dialog.BUTTON_NEGATIVE, R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .setStyle(new EditTextStyle.Builder(getActivity())
+                                    .setHint(getResources().getString(R.string.insert_class))
+                                    .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                                    .setOnTextAcceptedListener(new EditTextStyle.OnTextAcceptedListener() {
+
+                                        @Override
+                                        public void onAccepted(String classTitle) {
+                                            if (classTitle.length() > 0) {
+                                                saveClassOnDatabase(getActivity(), classTitle);
+                                            } else {
+                                                new AlertDialog.Builder(getActivity())
+                                                        .setTitle(getResources().getString(R.string.error))
+                                                        .setMessage(getResources().getString(R.string.class_not_saved))
+                                                        .setNeutralButton(getResources().getString(R.string.close), null)
+                                                        .show();
+                                            }
+                                        }
+                                    }).build())
                             .show(getFragmentManager());
                 }
             });
