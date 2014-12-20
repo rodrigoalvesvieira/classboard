@@ -267,8 +267,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 @Override
                 public void onClick(View v) {
 
-                    Logger.d(MainApplication.TAG, "clicado!");
-
                     PostOffice.newMail(getActivity())
                             .setTitle(getResources().getString(R.string.class_title))
                             .setIcon(R.drawable.ic_launcher)
