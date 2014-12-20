@@ -1,9 +1,12 @@
 package com.galizum.classboard.activities;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +29,9 @@ import com.galizum.classboard.MainApplication;
 import com.galizum.classboard.R;
 import com.galizum.classboard.database.ClassDbHelper;
 import com.galizum.classboard.util.Logger;
+import com.r0adkll.postoffice.PostOffice;
+import com.r0adkll.postoffice.model.Design;
+import com.r0adkll.postoffice.styles.EditTextStyle;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -249,14 +256,20 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             View rootView = inflater.inflate(R.layout.fragment_section_classes, container, false);
             Bundle args = getArguments();
 
-            final Context currentActivity = new MainActivity();
-
             rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
 
                     Logger.d(MainApplication.TAG, "clicado!");
+
+                    PostOffice.newMail(getActivity())
+                            .setTitle(getResources().getString(R.string.class_title))
+                            .setIcon(R.drawable.ic_launcher)
+                            .setThemeColor(getResources().getColor(R.color.dark_green))
+                            .setDesign(Design.MATERIAL_LIGHT)
+                            .showKeyboardOnDisplay(true)
+                            .show(getFragmentManager());
                 }
             });
 
