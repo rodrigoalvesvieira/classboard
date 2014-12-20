@@ -57,9 +57,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     static String cameraTabTitle;
     static String classesTabTitle;
 
-    static View classesList;
-    static View addButton;
-
     static private SecureRandom random = new SecureRandom();
 
     public void onCreate(Bundle savedInstanceState) {
@@ -83,9 +80,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         cameraTabTitle = getResources().getString(R.string.camera_tab_title);
         classesTabTitle = getResources().getString(R.string.classes_tab_title);
-
-        classesList = findViewById(android.R.id.list);
-        addButton = findViewById(R.id.fab);
 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the
         // user swipes between sections.
@@ -261,6 +255,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_section_classes, container, false);
             Bundle args = getArguments();
+
+            ListView classesList = (ListView) rootView.findViewById(R.id.list);
 
             rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
 
