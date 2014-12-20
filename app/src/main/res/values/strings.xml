@@ -28,7 +28,7 @@
 
     <string name="dummy_section_text">Aqui é onde você visualiza e adiciona disciplinas.</string>
     <string name="classes_call_to_action">Adicione sua primeira disciplina!</string>
-    <string name="show_device_gallery">Ver fotos na Galeria</string>
+    <string name="show_device_gallery">Selecionar fotos da Galeria</string>
     <string name="show_class_pictures">Fotos de disciplina</string>
 
     <string name="camera_tab_title">Câmera</string>

@@ -3,6 +3,7 @@ package com.galizum.classboard.activities;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,7 +25,6 @@ import com.galizum.classboard.MainApplication;
 import com.galizum.classboard.R;
 import com.galizum.classboard.database.ClassDbHelper;
 import com.galizum.classboard.util.Logger;
-import com.melnykov.fab.FloatingActionButton;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -198,7 +198,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     });
 
             // Demonstration of navigating to external activities.
-            rootView.findViewById(R.id.demo_external_activity)
+            rootView.findViewById(R.id.select_pictures_from_gallery)
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -249,20 +249,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             View rootView = inflater.inflate(R.layout.fragment_section_classes, container, false);
             Bundle args = getArguments();
 
-            ListView listView = (ListView) classesList;
-            FloatingActionButton fab = (FloatingActionButton) addButton;
+            final Context currentActivity = new MainActivity();
 
-            if (fab != null) {
-                fab.attachToListView(listView);
+            rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
 
-                fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                    @Override
-                    public void onClick(View v) {
-                        Logger.d(MainApplication.TAG, "Click para adicionar disciplina efetuado");
-                    }
-                });
-            }
+                    Logger.d(MainApplication.TAG, "clicado!");
+                }
+            });
 
             return rootView;
         }
