@@ -105,6 +105,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(mAppSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+        setFonts();
     }
 
     @Override
@@ -163,16 +165,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     public void setFonts() {
-        Typeface fontOthers = Typeface.createFromAsset(getAssets(), "Montserrat-Regular.ttf");
-        textView.setTypeface(fontOthers);
-
         try {
             final int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
             TextView title = (TextView) getWindow().findViewById(titleId);
-            Typeface fontLogo = Typeface.createFromAsset(getAssets(), "HouseSlant-Regular.otf");
+            Typeface fontLogo = Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf");
 
             title.setTypeface(fontLogo);
-            // check for null and manipulate the title as see fit
+
         } catch (Exception e) {
             Logger.e(MainApplication.TAG, "Failed to obtain action bar title reference");
         }
