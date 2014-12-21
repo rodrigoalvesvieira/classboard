@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -27,7 +28,8 @@ import android.widget.Toast;
 
 import com.galizum.classboard.MainApplication;
 import com.galizum.classboard.R;
-import com.galizum.classboard.database.ClassDbHelper;
+import com.galizum.classboard.adapters.DisciplineCursorAdapter;
+import com.galizum.classboard.database.DisciplineDbHelper;
 import com.galizum.classboard.util.Logger;
 import com.r0adkll.postoffice.PostOffice;
 import com.r0adkll.postoffice.model.Design;
@@ -55,7 +57,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     TextView textView;
 
     static String cameraTabTitle;
-    static String classesTabTitle;
+    static String disciplinesTabTitle;
 
     static private SecureRandom random = new SecureRandom();
 
@@ -79,7 +81,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         cameraTabTitle = getResources().getString(R.string.camera_tab_title);
-        classesTabTitle = getResources().getString(R.string.classes_tab_title);
+        disciplinesTabTitle = getResources().getString(R.string.disciplines_tab_title);
 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the
         // user swipes between sections.
@@ -143,9 +145,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                 default:
                     // The other sections of the app are dummy placeholders.
-                    Fragment fragment = new ClassesSectionFragment();
+                    Fragment fragment = new DisciplinesSectionFragment();
                     Bundle args = new Bundle();
-                    args.putInt(ClassesSectionFragment.ARG_SECTION_NUMBER, i + 1);
+                    args.putInt(DisciplinesSectionFragment.ARG_SECTION_NUMBER, i + 1);
                     fragment.setArguments(args);
                     return fragment;
             }
@@ -160,7 +162,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         public CharSequence getPageTitle(int position) {
             if (position == 0) return cameraTabTitle;
 
-            return classesTabTitle;
+            return disciplinesTabTitle;
         }
     }
 
@@ -219,15 +221,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     /**
-     * A static method to create a new class object from the parameters it receives
+     * A static method to create a new discipline from the parameters it receives
      *
      * @param ctx, the current Activity
-     * @param text the title of the class to be created
+     * @param text the title of the discipline to be created
      */
-    public static void saveClassOnDatabase(Context ctx, String text) {
-        ClassDbHelper classDbHelper = new ClassDbHelper(ctx);
-        SQLiteDatabase db = classDbHelper.getWritableDatabase();
-        classDbHelper.onCreate(db);
+    public static void saveDisciplineOnDatabase(Context ctx, String text) {
+        DisciplineDbHelper disciplineDbHelper = new DisciplineDbHelper(ctx);
+        SQLiteDatabase db = disciplineDbHelper.getWritableDatabase();
+        disciplineDbHelper.onCreate(db);
 
         // Writing values to DB
         ContentValues values = new ContentValues();
@@ -235,27 +237,31 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         String randomId = new BigInteger(80, random).toString(32);
         Logger.d(MainApplication.TAG, "Salvando nova disciplina com id " + randomId +  "...");
 
-        values.put("classId", randomId);
+        values.put("disciplineId", randomId);
         values.put("title", text);
-        db.insert(ClassDbHelper.TABLE_NAME, "null", values);
+        db.insert(DisciplineDbHelper.TABLE_NAME, "null", values);
 
-        Toast.makeText(ctx, ctx.getResources().getString(R.string.class_saved), Toast.LENGTH_SHORT).show();
+        Toast.makeText(ctx, ctx.getResources().getString(R.string.discipline_saved), Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * A fragment for the Classes menu, with a ListView and a button to add another class
+     * A fragment for the disciplines menu, with a ListView and a button to add another discipline
      */
-    public static class ClassesSectionFragment extends Fragment {
+    public static class DisciplinesSectionFragment extends Fragment {
 
         public static final String ARG_SECTION_NUMBER = "section_number";
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_classes, container, false);
-            Bundle args = getArguments();
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_section_disciplines, container, false);
 
-            ListView classesList = (ListView) rootView.findViewById(R.id.list);
+            DisciplineDbHelper disciplineDbHelper = new DisciplineDbHelper(getActivity());
+            SQLiteDatabase db = disciplineDbHelper.getWritableDatabase();
+            Cursor disciplinesCursor = db.rawQuery("SELECT rowid _id,* FROM " + DisciplineDbHelper.TABLE_NAME, null);
+            DisciplineCursorAdapter disciplineAdapter = new DisciplineCursorAdapter(getActivity(), disciplinesCursor);
+
+            ListView disciplinesList = (ListView) rootView.findViewById(R.id.list);
+            disciplinesList.setAdapter(disciplineAdapter);
 
             rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
 
@@ -263,7 +269,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 public void onClick(View v) {
 
                     PostOffice.newMail(getActivity())
-                            .setTitle(getResources().getString(R.string.class_title))
+                            .setTitle(getResources().getString(R.string.discipline_title))
                             .setIcon(R.drawable.ic_launcher)
                             .setThemeColor(getResources().getColor(R.color.dark_green))
                             .setDesign(Design.MATERIAL_LIGHT)
@@ -281,18 +287,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                                 }
                             })
                             .setStyle(new EditTextStyle.Builder(getActivity())
-                                    .setHint(getResources().getString(R.string.insert_class))
+                                    .setHint(getResources().getString(R.string.insert_discipline))
                                     .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
                                     .setOnTextAcceptedListener(new EditTextStyle.OnTextAcceptedListener() {
 
                                         @Override
-                                        public void onAccepted(String classTitle) {
-                                            if (classTitle.length() > 0) {
-                                                saveClassOnDatabase(getActivity(), classTitle);
+                                        public void onAccepted(String disciplineTitle) {
+                                            if (disciplineTitle.length() > 0) {
+                                                saveDisciplineOnDatabase(getActivity(), disciplineTitle);
                                             } else {
                                                 new AlertDialog.Builder(getActivity())
                                                         .setTitle(getResources().getString(R.string.error))
-                                                        .setMessage(getResources().getString(R.string.class_not_saved))
+                                                        .setMessage(getResources().getString(R.string.discipline_not_saved))
                                                         .setNeutralButton(getResources().getString(R.string.close), null)
                                                         .show();
                                             }

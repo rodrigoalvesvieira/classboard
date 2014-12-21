@@ -5,18 +5,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class ClassDbHelper extends SQLiteOpenHelper {
+public class DisciplineDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "classboard.db";
     public static final String TABLE_NAME = "classes";
 
     private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + TABLE_NAME + " (_ID INTEGER PRIMARY KEY, classId TEXT NOT NULL, title TEXT NOT NULL)";
+            "CREATE TABLE " + TABLE_NAME + " (_ID INTEGER PRIMARY KEY, disciplineId TEXT NOT NULL, title TEXT NOT NULL)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    public ClassDbHelper(Context context) {
+    public DisciplineDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -39,10 +39,7 @@ public class ClassDbHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public static void create(String title) {
-    }
-
-    public int countClasses() {
+    public int countDisciplines() {
         int count;
 
         String countQuery = "SELECT * FROM " + TABLE_NAME;
@@ -52,6 +49,4 @@ public class ClassDbHelper extends SQLiteOpenHelper {
         cursor.close();
         return count;
     }
-
-
 }
