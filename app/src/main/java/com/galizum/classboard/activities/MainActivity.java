@@ -38,6 +38,7 @@ import com.r0adkll.postoffice.styles.EditTextStyle;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.sql.SQLException;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -230,19 +231,19 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public static void saveDisciplineOnDatabase(Context ctx, String text) {
         DisciplineDbHelper disciplineDbHelper = new DisciplineDbHelper(ctx);
         SQLiteDatabase db = disciplineDbHelper.getWritableDatabase();
-        disciplineDbHelper.onCreate(db);
 
         // Writing values to DB
         ContentValues values = new ContentValues();
-
-        String randomId = new BigInteger(80, random).toString(32);
-        Logger.d(MainApplication.TAG, "Salvando nova disciplina com id " + randomId +  "...");
-
-        values.put("disciplineId", randomId);
         values.put("title", text);
-        db.insert(DisciplineDbHelper.TABLE_NAME, "null", values);
 
-        Toast.makeText(ctx, ctx.getResources().getString(R.string.discipline_saved), Toast.LENGTH_SHORT).show();
+        try {
+            long id = db.insertOrThrow(DisciplineDbHelper.TABLE_NAME, null, values);
+
+            Toast.makeText(ctx, "id inserido eh " +  id + " " + disciplineDbHelper.countDisciplines() + " " + ctx.getResources().getString(R.string.discipline_saved), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(ctx, e.getMessage(), Toast.LENGTH_LONG);
+        }
+
     }
 
     /**
@@ -256,12 +257,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_section_disciplines, container, false);
 
-            DisciplineDbHelper disciplineDbHelper = new DisciplineDbHelper(getActivity());
+            final DisciplineDbHelper disciplineDbHelper = new DisciplineDbHelper(getActivity());
             SQLiteDatabase db = disciplineDbHelper.getWritableDatabase();
             Cursor disciplinesCursor = db.rawQuery("SELECT rowid _id,* FROM " + DisciplineDbHelper.TABLE_NAME, null);
-            DisciplineCursorAdapter disciplineAdapter = new DisciplineCursorAdapter(getActivity(), disciplinesCursor);
+            final DisciplineCursorAdapter disciplineAdapter = new DisciplineCursorAdapter(getActivity(), disciplinesCursor);
 
-            ListView disciplinesList = (ListView) rootView.findViewById(R.id.list);
+            final ListView disciplinesList = (ListView) rootView.findViewById(R.id.list);
             disciplinesList.setAdapter(disciplineAdapter);
 
             disciplinesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -302,8 +303,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                                         @Override
                                         public void onAccepted(String disciplineTitle) {
+                                            Logger.d(MainApplication.TAG, "total: " + disciplineDbHelper.countDisciplines());
+
                                             if (disciplineTitle.length() > 0) {
                                                 saveDisciplineOnDatabase(getActivity(), disciplineTitle);
+
+                                                disciplinesList.deferNotifyDataSetChanged();
+
+                                                disciplineAdapter.notifyDataSetChanged();
                                             } else {
                                                 new AlertDialog.Builder(getActivity())
                                                         .setTitle(getResources().getString(R.string.error))
