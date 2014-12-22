@@ -267,7 +267,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             disciplinesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Logger.d(MainApplication.TAG, "clicado!");
+                    Intent intent = new Intent(getActivity(), NavigationActivity.class);
+                    startActivity(intent);
                 }
             });
 
