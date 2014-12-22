@@ -25,6 +25,8 @@
     <string name="error">Erro</string>
     <string name="discipline_not_saved">Nome da disciplina está vazio</string>
     <string name="close">Fechar</string>
+    <string name="discipline">Disciplina</string>
+    <string name="time">08:00 - 09:00</string>
 
     <string name="dummy_section_text">Aqui é onde você visualiza e adiciona disciplinas.</string>
     <string name="classes_call_to_action">Adicione sua primeira disciplina!</string>
