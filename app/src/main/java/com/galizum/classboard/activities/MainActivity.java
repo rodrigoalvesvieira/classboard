@@ -22,6 +22,7 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -262,6 +263,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
             ListView disciplinesList = (ListView) rootView.findViewById(R.id.list);
             disciplinesList.setAdapter(disciplineAdapter);
+
+            disciplinesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Logger.d(MainApplication.TAG, "clicado!");
+                }
+            });
 
             rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
 
