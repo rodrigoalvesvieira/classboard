@@ -36,10 +36,6 @@ import com.r0adkll.postoffice.PostOffice;
 import com.r0adkll.postoffice.model.Design;
 import com.r0adkll.postoffice.styles.EditTextStyle;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.sql.SQLException;
-
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
     /**
@@ -56,12 +52,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      */
     ViewPager mViewPager;
 
-    TextView textView;
-
     static String cameraTabTitle;
     static String disciplinesTabTitle;
-
-    static private SecureRandom random = new SecureRandom();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,16 +161,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     public void setFonts() {
-        try {
-            final int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
-            TextView title = (TextView) getWindow().findViewById(titleId);
-            Typeface fontLogo = Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf");
+        final int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        TextView title = (TextView) getWindow().findViewById(titleId);
+        Typeface fontLogo = Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf");
 
-            title.setTypeface(fontLogo);
-
-        } catch (Exception e) {
-            Logger.e(MainApplication.TAG, "Failed to obtain action bar title reference");
-        }
+        title.setTypeface(fontLogo);
     }
 
     /**
@@ -232,18 +219,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         DisciplineDbHelper disciplineDbHelper = new DisciplineDbHelper(ctx);
         SQLiteDatabase db = disciplineDbHelper.getWritableDatabase();
 
-        // Writing values to DB
         ContentValues values = new ContentValues();
         values.put("title", text);
 
-        try {
-            long id = db.insertOrThrow(DisciplineDbHelper.TABLE_NAME, null, values);
+        db.insertOrThrow(DisciplineDbHelper.TABLE_NAME, null, values);
 
-            Toast.makeText(ctx, "id inserido eh " +  id + " " + disciplineDbHelper.countDisciplines() + " " + ctx.getResources().getString(R.string.discipline_saved), Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(ctx, e.getMessage(), Toast.LENGTH_LONG);
-        }
-
+        Toast.makeText(ctx, ctx.getResources().getString(R.string.discipline_saved), Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -260,9 +241,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             final DisciplineDbHelper disciplineDbHelper = new DisciplineDbHelper(getActivity());
             SQLiteDatabase db = disciplineDbHelper.getWritableDatabase();
             Cursor disciplinesCursor = db.rawQuery("SELECT rowid _id,* FROM " + DisciplineDbHelper.TABLE_NAME, null);
-            final DisciplineCursorAdapter disciplineAdapter = new DisciplineCursorAdapter(getActivity(), disciplinesCursor);
+            DisciplineCursorAdapter disciplineAdapter = new DisciplineCursorAdapter(getActivity(), disciplinesCursor);
 
-            final ListView disciplinesList = (ListView) rootView.findViewById(R.id.list);
+            ListView disciplinesList = (ListView) rootView.findViewById(R.id.list);
             disciplinesList.setAdapter(disciplineAdapter);
 
             disciplinesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -308,9 +289,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                                             if (disciplineTitle.length() > 0) {
                                                 saveDisciplineOnDatabase(getActivity(), disciplineTitle);
 
-                                                disciplinesList.deferNotifyDataSetChanged();
-
-                                                disciplineAdapter.notifyDataSetChanged();
                                             } else {
                                                 new AlertDialog.Builder(getActivity())
                                                         .setTitle(getResources().getString(R.string.error))
@@ -323,6 +301,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .show(getFragmentManager());
                 }
             });
+
+            disciplineAdapter.notifyDataSetChanged();
 
             return rootView;
         }
