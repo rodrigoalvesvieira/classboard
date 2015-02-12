@@ -1,6 +1,7 @@
 package com.galizum.classboard.activities;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
@@ -225,6 +226,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         db.insertOrThrow(DisciplineDbHelper.TABLE_NAME, null, values);
 
         Toast.makeText(ctx, ctx.getResources().getString(R.string.discipline_saved), Toast.LENGTH_SHORT).show();
+
+        db.close();
     }
 
     /**
@@ -239,9 +242,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             View rootView = inflater.inflate(R.layout.fragment_section_disciplines, container, false);
 
             final DisciplineDbHelper disciplineDbHelper = new DisciplineDbHelper(getActivity());
-            SQLiteDatabase db = disciplineDbHelper.getWritableDatabase();
-            Cursor disciplinesCursor = db.rawQuery("SELECT rowid _id,* FROM " + DisciplineDbHelper.TABLE_NAME, null);
-            DisciplineCursorAdapter disciplineAdapter = new DisciplineCursorAdapter(getActivity(), disciplinesCursor);
+            final SQLiteDatabase db = disciplineDbHelper.getWritableDatabase();
+            final Cursor disciplinesCursor = db.rawQuery("SELECT rowid _id,* FROM " + DisciplineDbHelper.TABLE_NAME, null);
+            final DisciplineCursorAdapter disciplineAdapter = new DisciplineCursorAdapter(getActivity(), disciplinesCursor);
 
             ListView disciplinesList = (ListView) rootView.findViewById(R.id.list);
             disciplinesList.setAdapter(disciplineAdapter);
@@ -288,6 +291,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                                             if (disciplineTitle.length() > 0) {
                                                 saveDisciplineOnDatabase(getActivity(), disciplineTitle);
+                                                disciplineAdapter.notifyDataSetChanged();
+
+                                                final Cursor disciplinesCursor2 = db.rawQuery("SELECT rowid _id,* FROM " + DisciplineDbHelper.TABLE_NAME, null);
+                                                disciplineAdapter.swapCursor(disciplinesCursor2);
 
                                             } else {
                                                 new AlertDialog.Builder(getActivity())
