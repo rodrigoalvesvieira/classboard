@@ -184,7 +184,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(getActivity(), NavigationActivity.class);
+                            Intent intent2 = new Intent(getActivity(), NavigationActivity.class);
+
+                            Intent intent = new Intent(getActivity(), CameraActivity.class);
                             startActivity(intent);
                         }
                     });
