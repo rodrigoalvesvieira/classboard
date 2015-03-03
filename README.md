@@ -1,6 +1,4 @@
-# Classboard Android [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.galizum.classboard)
-
-![Classboard](https://dl.dropboxusercontent.com/u/7743293/classboard-logo.png)
+# Classmate Android [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=)
 
 Descrição para a Google Play Store:
 
@@ -23,7 +21,7 @@ Esse projeto utiliza uma série de dependências para funções de integração 
 ## O Time
 
 * Rodrigo Alves
-* Igor Matos
+* Igor Matosc
 * Amanda Mendes
 * Ian Firemann
 * Phillipe Burgos
